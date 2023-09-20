@@ -15,8 +15,6 @@ function initRoutes(app) {
   app.get('/user/interests', articleController().getUserInterest)
   // Update User Interest
   app.post('/user/interests',authMiddleware, articleController().updateUserInterest)
-
-  
   // news-feed
   app.get('/news-feed',authMiddleware, articleController().newsFeed)
 }
