@@ -1,0 +1,92 @@
+import React, { useEffect, useState } from 'react';
+import api from '../api/userApi'
+
+const InterestSelection = () => {
+
+  // const [interests, setInterests] = useState([]);
+
+  const [selectedInterests, setSelectedInterests] = useState([]);
+
+  const [availableInterests, setAvailableInterests] = useState([]);
+
+  // Define a list of interest categories
+  const interestCategories = [
+    { id: 'technology', label: 'Technology' },
+    { id: 'sports', label: 'Sports' },
+    { id: 'politics', label: 'Politics' },
+    { id: 'health', label: 'Health' },
+  ];
+
+  // Function to fetch available interests from the backend
+  useEffect(() => {
+    api.get('/user/interests').then((response) => {
+      console.log(response.data)
+      setAvailableInterests(response.data);
+    });
+  }, []);
+
+  // Function to handle checkbox changes
+  const handleCheckboxChange = (event) => {
+    const { value, checked } = event.target;
+    if (checked) {
+      // Add the selected interest to the list
+      setSelectedInterests([...selectedInterests, value]);
+    } else {
+      // Remove the unselected interest from the list
+      setSelectedInterests(selectedInterests.filter((interest) => interest !== value));
+    }
+  };
+  // Function to handle form submission (you can replace this with your own logic)
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // Do something with the selected interests (e.g., send to a server)
+    console.log('Selected Interests:', selectedInterests);
+    alert('Interests updated successfully!');
+  };
+
+  // Function to handle the selection of interests
+  // const handleInterestToggle = (interest) => {
+  //   const isSelected = selectedInterests.includes(interest);
+
+  //   if (isSelected) {
+  //     // If interest is already selected, remove it
+  //     setSelectedInterests(selectedInterests.filter((i) => i !== interest));
+  //   } else {
+  //     // If interest is not selected, add it
+  //     setSelectedInterests([...selectedInterests, interest]);
+  //   }
+  // };
+
+  // Function to submit the selected interests to the backend
+  // const handleSubmit = () => {
+  //   api.post('/user/interests', { interests: selectedInterests }).then((response) => {
+  //     // Handle success or error
+  //   });
+  // };
+
+
+
+  return (
+    <div>
+      <h2>Select Your Interests</h2>
+      <form onSubmit={handleSubmit}>
+        {interestCategories.map((category) => (
+          <label key={category.id}>
+            <input
+              type="checkbox"
+              name="interest"
+              value={category.id}
+              checked={selectedInterests.includes(category.id)}
+              onChange={handleCheckboxChange}
+            />{' '}
+            {category.label}
+          </label>
+        ))}
+        <button type="submit">Update</button>
+        <button type="button" onClick={() => setSelectedInterests([])}>Reset</button>
+      </form>
+    </div>
+  )
+}
+
+export default InterestSelection
